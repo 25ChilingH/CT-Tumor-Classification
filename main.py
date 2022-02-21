@@ -30,9 +30,9 @@ from sklearn.utils import class_weight
 # model evaluation
 from sklearn.model_selection import KFold
 
-METADATA_CSV = "../input/brian-tumor-dataset/metadata.csv"
-TUMOR = '../input/brian-tumor-dataset/Brain Tumor Data Set/Brain Tumor Data Set/Brain Tumor/'
-CONTROL = "../input/brian-tumor-dataset/Brain Tumor Data Set/Brain Tumor Data Set/Healthy/"
+METADATA_CSV = "../brain-tumor-dataset/metadata.csv"
+TUMOR = '../brain-tumor-dataset/Brain Tumor Data Set/Brain Tumor Data Set/Brain Tumor/'
+CONTROL = "../brain-tumor-dataset/Brain Tumor Data Set/Brain Tumor Data Set/Healthy/"
 
 def augment_data(image):
     transform = A.Compose([
@@ -97,28 +97,28 @@ def reduce_noise(noisy_img):
 def remove_white_borders(img_with_borders):
     # left
     if np.mean(img_with_borders[:, 0]) > 30:
-        img_with_borders[:, 0] = 0;
+        img_with_borders[:, 0] = 0
     # right
     if np.mean(img_with_borders[:, -1]) > 30:
-        img_with_borders[:, -1] = 0;
+        img_with_borders[:, -1] = 0
     # top
     if np.mean(img_with_borders[0, :]) > 30:
-        img_with_borders[0, :] = 0;
+        img_with_borders[0, :] = 0
     # bottom
     if np.mean(img_with_borders[-1, :]) > 30:
-        img_with_borders[-1, :] = 0;
+        img_with_borders[-1, :] = 0
     return img_with_borders
 
 # all part of data normalization
 def remove_black_padding(img_with_padding):
     # Sides
     vert_mean = np.mean(img_with_padding, axis=0)
-    vert_map = vert_mean > 1;
+    vert_map = vert_mean > 1
     vert_matches = np.where(vert_map == True)
     img_no_padding = img_with_padding[:, vert_matches[0][0]:vert_matches[0][-1]]
     # Top & bottom
     hori_mean = np.mean(img_no_padding, axis=1)
-    hori_map = hori_mean > 1;
+    hori_map = hori_mean > 1
     hori_matches = np.where(hori_map == True)
     img_no_padding = img_no_padding[hori_matches[0][0]:hori_matches[0][-1], :]
     return img_no_padding
@@ -241,9 +241,9 @@ y_pred_max = np.argmax(y_pred, axis=1)
 cf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred_max)
 ax = sns.heatmap(cf_matrix, annot=True, cmap='Blues')
 
-ax.set_title('Brain Tumor CT Scans Confusion Matrix \n\n');
+ax.set_title('Brain Tumor CT Scans Confusion Matrix \n\n')
 ax.set_xlabel('\nPredicted Tumor Present')
-ax.set_ylabel('Actual Tumor Present ');
+ax.set_ylabel('Actual Tumor Present ')
 
 ax.xaxis.set_ticklabels(['False','True'])
 ax.yaxis.set_ticklabels(['False','True'])
